@@ -119,6 +119,7 @@ describe("applyAuthChoicePluginProvider", () => {
         runtime: createNonExitingRuntime(),
         prompter: createWizardPrompter(),
         setDefaultModel: true,
+        opts: { acknowledgeNonClawHubInstall: true },
       },
       {
         authChoice: "openai-api-key",
@@ -130,6 +131,16 @@ describe("applyAuthChoicePluginProvider", () => {
     );
 
     expect(runProviderModelSelectedHook).toHaveBeenCalledOnce();
+    expect(ensureCodexRuntimePluginForModelSelection).toHaveBeenCalledWith(
+      expect.objectContaining({
+        acknowledgeNonClawHubInstall: true,
+      }),
+    );
+    expect(ensureCopilotRuntimePluginForModelSelection).toHaveBeenCalledWith(
+      expect.objectContaining({
+        acknowledgeNonClawHubInstall: true,
+      }),
+    );
     expect(offerPostInstallMigrations).toHaveBeenCalledWith(
       expect.objectContaining({
         installedPluginIds: ["codex"],

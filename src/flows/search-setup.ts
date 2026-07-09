@@ -393,6 +393,7 @@ function preserveDisabledState(original: OpenClawConfig, result: OpenClawConfig)
 }
 
 type SetupSearchOptions = {
+  acknowledgeNonClawHubInstall?: boolean;
   quickstartDefaults?: boolean;
   preserveDisabledSearchState?: boolean;
   secretInputMode?: SecretInputMode;
@@ -424,6 +425,7 @@ async function finalizeSearchProviderSetup(params: {
       prompter: params.prompter,
       runtime: params.runtime,
       autoConfirmSingleSource: true,
+      acknowledgeNonClawHubInstall: params.opts?.acknowledgeNonClawHubInstall === true,
     });
     if (!installed.installed) {
       return params.originalConfig;

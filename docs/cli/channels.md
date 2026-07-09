@@ -52,6 +52,7 @@ row appears until the next inbound or outbound conversation event.
 
 ```bash
 openclaw channels add --channel telegram --token <bot-token>
+openclaw channels add --channel matrix --homeserver <url> --user-id <id> --password <password> --acknowledge-non-clawhub-install
 openclaw channels add --channel nostr --private-key "$NOSTR_PRIVATE_KEY"
 openclaw channels remove --channel telegram --delete
 ```
@@ -63,7 +64,7 @@ openclaw channels remove --channel telegram --delete
 `channels remove` only operates on installed/configured channel plugins. Use `channels add` first for installable catalog channels. Without `--delete` it asks to disable the account and keeps its config; `--delete` removes the config entries without prompting.
 For runtime-backed channel plugins, `channels remove` also asks the running Gateway to stop the selected account before it updates config, so disabling or deleting an account does not leave the old listener active until restart.
 
-Non-interactive add flags shared across channels: `--account <id>`, `--name <name>`, `--token`, `--token-file`, `--bot-token`, `--app-token`, `--secret`, `--secret-file`, `--password`, `--cli-path`, `--url`, `--base-url`, `--http-url`, `--auth-dir`, and `--use-env` (env-backed auth, default account only, where supported). Channel-specific flags include:
+Non-interactive add flags shared across channels: `--account <id>`, `--name <name>`, `--token`, `--token-file`, `--bot-token`, `--app-token`, `--secret`, `--secret-file`, `--password`, `--cli-path`, `--url`, `--base-url`, `--http-url`, `--auth-dir`, `--use-env` (env-backed auth, default account only, where supported), and `--acknowledge-non-clawhub-install` (allow an installable channel plugin to be installed from npm, git, local/archive, npm-pack, or marketplace sources after you review and trust the source). Channel-specific flags include:
 
 | Channel     | Flags                                                                                                |
 | ----------- | ---------------------------------------------------------------------------------------------------- |

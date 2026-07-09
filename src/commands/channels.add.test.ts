@@ -470,6 +470,14 @@ describe("channelsAddCommand", () => {
     expect(channelWizardMocks.prompter.outro).toHaveBeenCalledWith("No channel changes made.");
   });
 
+  it("forwards non-ClawHub install acknowledgement into guided channel setup", async () => {
+    configMocks.readConfigFileSnapshot.mockResolvedValue({ ...baseConfigSnapshot });
+
+    await channelsAddCommand({ acknowledgeNonClawHubInstall: true }, runtime, { hasFlags: false });
+
+    expect(setupOptions().acknowledgeNonClawHubInstall).toBe(true);
+  });
+
   it("exits quietly when guided channel setup is cancelled", async () => {
     const { WizardCancelledError } = await import("../wizard/prompts.js");
     configMocks.readConfigFileSnapshot.mockResolvedValue({

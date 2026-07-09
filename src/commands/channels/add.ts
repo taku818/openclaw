@@ -194,6 +194,8 @@ async function channelsAddCommandImpl(
       onResolvedPlugin: (channel, plugin) => {
         resolvedPlugins.set(channel, plugin);
       },
+      acknowledgeNonClawHubInstall:
+        opts.acknowledgeNonClawHubInstall === true || opts.acknowledgeNonClawhubInstall === true,
     });
     if (selection.length === 0) {
       await prompter.outro("No channel changes made.");

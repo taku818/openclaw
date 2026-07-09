@@ -20,6 +20,10 @@ type BundledPackageChannelMetadataModule =
   typeof import("../plugins/bundled-package-channel-metadata.js");
 
 const optionNamesRemove = ["channel", "account", "delete"] as const;
+const channelAddControlOnlyOptionNames = new Set([
+  "acknowledgeNonClawHubInstall",
+  "acknowledgeNonClawhubInstall",
+]);
 
 type RegisterChannelsCliOptions = {
   includeSetupOptions?: boolean;
@@ -50,6 +54,10 @@ function runChannelsCommandWithDanger(action: () => Promise<void>, label: string
 
 function getOptionNames(command: Command): string[] {
   return command.options.map((option) => option.attributeName());
+}
+
+function getChannelAddConcreteOptionNames(command: Command): string[] {
+  return getOptionNames(command).filter((name) => !channelAddControlOnlyOptionNames.has(name));
 }
 
 function shouldRegisterChannelSetupOptions(
@@ -240,7 +248,7 @@ export async function registerChannelsCli(
   addCommand.action(async (opts, command) => {
     await runChannelsCommand(async () => {
       const { channelsAddCommand } = await loadChannelsCommands();
-      const hasFlags = hasExplicitOptions(command, getOptionNames(command));
+      const hasFlags = hasExplicitOptions(command, getChannelAddConcreteOptionNames(command));
       await channelsAddCommand(opts, defaultRuntime, { hasFlags });
     });
   });

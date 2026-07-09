@@ -30,6 +30,7 @@ openclaw update --tag main
 openclaw update --dry-run
 openclaw update --no-restart
 openclaw update --yes
+openclaw update --acknowledge-non-clawhub-install
 openclaw update --acknowledge-clawhub-risk
 openclaw update --json
 openclaw --update
@@ -49,6 +50,7 @@ launcher scripts).
 | `--json`                                         | Print machine-readable `UpdateRunResult` JSON. Includes `postUpdate.plugins.warnings` when a managed plugin needs repair, beta-channel plugin fallback details, and `postUpdate.plugins.integrityDrifts` when npm plugin artifact drift is detected during post-update sync.                                                                 |
 | `--timeout <seconds>`                            | Per-step timeout. Default `1800`.                                                                                                                                                                                                                                                                                                            |
 | `--yes`                                          | Skip confirmation prompts (for example downgrade confirmation).                                                                                                                                                                                                                                                                              |
+| `--acknowledge-non-clawhub-install`              | Allow post-update plugin sync and repair to install non-ClawHub plugin sources after you review and trust those sources. Without it, noninteractive installs from npm, git, local/archive, npm-pack, or marketplace sources fail closed or remain for `openclaw update repair`.                                                              |
 | `--acknowledge-clawhub-risk`                     | Allow post-update plugin sync to continue past community ClawHub trust warnings without an interactive prompt. Without it, risky community releases are skipped and left unchanged when OpenClaw cannot prompt. Official ClawHub packages and bundled plugin sources bypass this prompt.                                                     |
 
 There is no `--verbose` flag. Use `--dry-run` to preview planned actions,
@@ -98,6 +100,7 @@ converge.
 ```bash
 openclaw update repair
 openclaw update repair --channel beta
+openclaw update repair --acknowledge-non-clawhub-install
 openclaw update repair --acknowledge-clawhub-risk
 openclaw update repair --json
 ```
@@ -108,6 +111,7 @@ openclaw update repair --json
 | `--json`                                         | Print machine-readable finalization JSON.                                                                                                                                                                                                                           |
 | `--timeout <seconds>`                            | Timeout for repair steps. Default `1800`.                                                                                                                                                                                                                           |
 | `--yes`                                          | Skip confirmation prompts.                                                                                                                                                                                                                                          |
+| `--acknowledge-non-clawhub-install`              | Same behavior as on `openclaw update`; required for noninteractive repair to install required non-ClawHub plugin sources.                                                                                                                                           |
 | `--acknowledge-clawhub-risk`                     | Same behavior as on `openclaw update`.                                                                                                                                                                                                                              |
 | `--no-restart`                                   | Accepted for parity; repair never restarts the Gateway.                                                                                                                                                                                                             |
 

@@ -153,6 +153,7 @@ async function applyDefaultModelFromAuthChoice(params: {
   prompter: WizardPrompter;
   runtime: RuntimeEnv;
   workspaceDir?: string;
+  acknowledgeNonClawHubInstall?: boolean;
   runSelectedModelHook: (config: OpenClawConfig) => Promise<void>;
 }): Promise<OpenClawConfig> {
   const defaultModelBaseConfig = params.configBeforeProviderAuth ?? params.config;
@@ -177,6 +178,7 @@ async function applyDefaultModelFromAuthChoice(params: {
       prompter: params.prompter,
       runtime: params.runtime,
       ...(params.workspaceDir !== undefined ? { workspaceDir: params.workspaceDir } : {}),
+      ...(params.acknowledgeNonClawHubInstall ? { acknowledgeNonClawHubInstall: true } : {}),
     });
     nextConfig = codexInstall.cfg;
     await params.runSelectedModelHook(nextConfig);
@@ -204,6 +206,7 @@ async function applyDefaultModelFromAuthChoice(params: {
       prompter: params.prompter,
       runtime: params.runtime,
       ...(params.workspaceDir !== undefined ? { workspaceDir: params.workspaceDir } : {}),
+      ...(params.acknowledgeNonClawHubInstall ? { acknowledgeNonClawHubInstall: true } : {}),
     });
     nextConfig = copilotInstall.cfg;
   }
@@ -477,6 +480,7 @@ export async function applyAuthChoiceLoadedPluginProvider(
       prompter: params.prompter,
       runtime: params.runtime,
       workspaceDir,
+      acknowledgeNonClawHubInstall: params.opts?.acknowledgeNonClawHubInstall === true,
     });
     if (!installResult.installed) {
       return { config: installResult.cfg, retrySelection: true };
@@ -525,6 +529,7 @@ export async function applyAuthChoiceLoadedPluginProvider(
         prompter: params.prompter,
         runtime: params.runtime,
         workspaceDir,
+        acknowledgeNonClawHubInstall: params.opts?.acknowledgeNonClawHubInstall === true,
         runSelectedModelHook: async (config) => {
           await runProviderModelSelectedHook({
             config,
@@ -619,6 +624,7 @@ export async function applyAuthChoicePluginProvider(
         prompter: params.prompter,
         runtime: params.runtime,
         workspaceDir,
+        acknowledgeNonClawHubInstall: params.opts?.acknowledgeNonClawHubInstall === true,
         runSelectedModelHook: async (config) => {
           await runProviderModelSelectedHook({
             config,
