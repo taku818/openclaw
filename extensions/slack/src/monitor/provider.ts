@@ -509,6 +509,16 @@ export async function monitorSlackProvider(opts: MonitorSlackOpts = {}) {
     );
   }
 
+  if (isSharedSlackSocketAppToken && !teamId) {
+    runtime.log?.(
+      warn(
+        `[${account.accountId}] slack: teamId unresolved on a shared socket group (auth.test failed or returned no team_id); ` +
+          "ALL events for this account will be dropped to avoid acting on sibling workspaces' traffic — " +
+          "fix the bot token and restart",
+      ),
+    );
+  }
+
   const ctx = createSlackMonitorContext({
     cfg,
     accountId: account.accountId,
@@ -517,6 +527,8 @@ export async function monitorSlackProvider(opts: MonitorSlackOpts = {}) {
     client: accountWebClient,
     runtime,
     channelRuntime: opts.channelRuntime,
+    accountAbortSignal: opts.abortSignal,
+    isSharedSocketGroup: isSharedSlackSocketAppToken,
     botUserId,
     botId,
     teamId,
@@ -570,7 +582,11 @@ export async function monitorSlackProvider(opts: MonitorSlackOpts = {}) {
       accountId: account.accountId,
       capability: CHANNEL_APPROVAL_NATIVE_RUNTIME_CONTEXT_CAPABILITY,
       context: {
+        // The approval runtime must call the Web API as THIS account, not as
+        // whichever account owns a shared App — pass the per-account client
+        // alongside the (possibly shared) App.
         app,
+        client: accountWebClient,
         config: slackCfg.execApprovals ?? {},
       },
       abortSignal: opts.abortSignal,
