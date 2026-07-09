@@ -476,7 +476,7 @@ async function updateSlackInteractionMessage(params: {
   if (!params.channelId || !params.messageTs) {
     return;
   }
-  await params.ctx.app.client.chat.update({
+  await params.ctx.client.chat.update({
     channel: params.channelId,
     ts: params.messageTs,
     text: params.text,

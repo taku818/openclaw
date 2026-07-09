@@ -171,7 +171,7 @@ async function restoreSlackAssistantThreadContextFromMetadata(params: {
     return undefined;
   }
   try {
-    const response = (await params.ctx.app.client.conversations.replies({
+    const response = (await params.ctx.client.conversations.replies({
       channel: params.message.channel,
       ts: threadTs,
       oldest: threadTs,
@@ -308,7 +308,7 @@ async function resolveSlackHistoryMediaForPendingRecord(params: {
     isThreadReply: params.isThreadReply,
     threadStarter: params.threadStarter,
     isBotMessage: params.isBotMessage,
-    client: params.ctx.app.client,
+    client: params.ctx.client,
     botToken: params.ctx.botToken,
     mediaMaxBytes: Math.min(params.ctx.mediaMaxBytes, SLACK_HISTORY_MEDIA_MAX_BYTES),
     mediaReadIdleTimeoutMs: SLACK_HISTORY_MEDIA_IDLE_TIMEOUT_MS,
@@ -401,7 +401,7 @@ async function resolveSlackExplicitMentionState(params: {
   const explicitlyMentionedBotSubteam =
     Boolean(params.ctx.botUserId && params.hasSubteamMention) &&
     (await isSlackSubteamMentionForBot({
-      client: params.ctx.app.client,
+      client: params.ctx.client,
       text: params.messageText,
       botUserId: params.ctx.botUserId,
       teamId: params.ctx.teamId,
@@ -591,7 +591,7 @@ async function authorizeSlackInboundMessage(params: {
         await sendMessageSlack(message.channel, text, {
           cfg: ctx.cfg,
           token: ctx.botToken,
-          client: ctx.app.client,
+          client: ctx.client,
           accountId: account.accountId,
         });
       },
@@ -897,7 +897,7 @@ export async function prepareSlackMessage(params: {
         ? await resolveSlackThreadStarter({
             channelId: message.channel,
             threadTs,
-            client: ctx.app.client,
+            client: ctx.client,
           })
         : null;
     const senderName = pendingBody ? await resolveSenderName() : undefined;
@@ -1089,7 +1089,7 @@ export async function prepareSlackMessage(params: {
       ? resolveSlackThreadStarter({
           channelId: message.channel,
           threadTs,
-          client: ctx.app.client,
+          client: ctx.client,
         })
       : Promise.resolve(null);
   const chatType = resolveSlackChatType(conversation.resolvedChannelType);
@@ -1110,7 +1110,7 @@ export async function prepareSlackMessage(params: {
     threadStarter,
     isBotMessage,
     botToken: ctx.botToken,
-    client: ctx.app.client,
+    client: ctx.client,
     mediaMaxBytes: ctx.mediaMaxBytes,
     resolveUserName: ctx.resolveUserName,
   });
@@ -1162,7 +1162,7 @@ export async function prepareSlackMessage(params: {
     !statusReactionsWillHandle && shouldSendAckReaction && ackReactionMessageTs && ackReactionValue
       ? reactSlackMessage(message.channel, ackReactionMessageTs, ackReactionValue, {
           token: ctx.botToken,
-          client: ctx.app.client,
+          client: ctx.client,
         }).then(
           () => true,
           (err: unknown) => {

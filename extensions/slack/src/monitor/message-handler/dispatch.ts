@@ -397,7 +397,7 @@ function shouldUseStreaming(params: {
 }
 
 export async function resolveSlackStreamRecipientTeamId(params: {
-  client: Pick<PreparedSlackMessage["ctx"]["app"]["client"], "users">;
+  client: Pick<PreparedSlackMessage["ctx"]["client"], "users">;
   token: string;
   userId?: PreparedSlackMessage["message"]["user"];
   fallbackTeamId?: string;
@@ -520,7 +520,7 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
     setReaction: async (emoji) => {
       await reactSlackMessage(message.channel, reactionMessageTs ?? "", emoji, {
         token: ctx.botToken,
-        client: ctx.app.client,
+        client: ctx.client,
       }).catch((err: unknown) => {
         if (formatErrorMessage(err).includes("already_reacted")) {
           return;
@@ -531,7 +531,7 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
     removeReaction: async (emoji) => {
       await removeSlackReaction(message.channel, reactionMessageTs ?? "", emoji, {
         token: ctx.botToken,
-        client: ctx.app.client,
+        client: ctx.client,
       }).catch((err: unknown) => {
         if (formatErrorMessage(err).includes("no_reaction")) {
           return;
@@ -602,7 +602,7 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
         if (typingReaction && message.ts) {
           await reactSlackMessage(message.channel, message.ts, typingReaction, {
             token: ctx.botToken,
-            client: ctx.app.client,
+            client: ctx.client,
           }).catch(() => {});
         }
       },
@@ -619,7 +619,7 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
         if (typingReaction && message.ts) {
           await removeSlackReaction(message.channel, message.ts, typingReaction, {
             token: ctx.botToken,
-            client: ctx.app.client,
+            client: ctx.client,
           }).catch(() => {});
         }
       },
@@ -1069,13 +1069,13 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
         }
 
         streamSession = await startSlackStream({
-          client: ctx.app.client,
+          client: ctx.client,
           channel: message.channel,
           threadTs: streamThreadTs,
           text,
           ...(slackIdentity ? { identity: slackIdentity } : {}),
           teamId: await resolveSlackStreamRecipientTeamId({
-            client: ctx.app.client,
+            client: ctx.client,
             token: ctx.botToken,
             userId: message.user,
             fallbackTeamId: ctx.teamId,
@@ -1280,7 +1280,7 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
         await draftStream.seal();
         try {
           await finalizeSlackPreviewEdit({
-            client: ctx.app.client,
+            client: ctx.client,
             token: ctx.botToken,
             accountId: account.accountId,
             channelId,
@@ -1366,7 +1366,7 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
             return;
           }
           await finalizeSlackPreviewEdit({
-            client: ctx.app.client,
+            client: ctx.client,
             token: ctx.botToken,
             accountId: account.accountId,
             channelId: preview.channelId,
@@ -1574,14 +1574,14 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
     nativeProgressStreamThreadTs = streamThreadTs;
     const startPromise = (async () => {
       const session = await startSlackStream({
-        client: ctx.app.client,
+        client: ctx.client,
         channel: message.channel,
         threadTs: streamThreadTs,
         chunks,
         taskDisplayMode: "plan",
         ...(slackIdentity ? { identity: slackIdentity } : {}),
         teamId: await resolveSlackStreamRecipientTeamId({
-          client: ctx.app.client,
+          client: ctx.client,
           token: ctx.botToken,
           userId: message.user,
           fallbackTeamId: ctx.teamId,
@@ -2129,7 +2129,7 @@ export async function dispatchPreparedSlackMessage(prepared: PreparedSlackMessag
           prepared.ackReactionValue,
           {
             token: ctx.botToken,
-            client: ctx.app.client,
+            client: ctx.client,
           },
         ),
       onError: (err) => {

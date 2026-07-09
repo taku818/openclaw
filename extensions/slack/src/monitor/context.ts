@@ -1,5 +1,6 @@
 // Slack plugin module implements context behavior.
 import type { App } from "@slack/bolt";
+import type { WebClient } from "@slack/web-api";
 import { resolveDefaultAgentId } from "openclaw/plugin-sdk/agent-runtime";
 import { formatAllowlistMatchMeta } from "openclaw/plugin-sdk/allow-from";
 import type { ChannelRuntimeSurface } from "openclaw/plugin-sdk/channel-contract";
@@ -97,6 +98,14 @@ export type SlackMonitorContext = {
   accountId: string;
   botToken: string;
   app: App;
+  // Per-account Web API client bound to this account's own bot token. When a
+  // Slack app is shared across multiple accounts (same app token, multiple
+  // workspace installs on one Socket Mode connection), `app` is the shared
+  // Bolt App instance and `app.client` defaults to whichever account created
+  // it. All outbound Web API calls made on behalf of THIS account must go
+  // through `client`, never `app.client`, so they always authenticate as this
+  // account's own bot identity regardless of which account owns the app.
+  client: WebClient;
   runtime: RuntimeEnv;
   channelRuntime?: ChannelRuntimeSurface;
 
@@ -186,6 +195,7 @@ export function createSlackMonitorContext(params: {
   accountId: string;
   botToken: string;
   app: App;
+  client: WebClient;
   runtime: RuntimeEnv;
   channelRuntime?: ChannelRuntimeSurface;
 
@@ -398,7 +408,7 @@ export function createSlackMonitorContext(params: {
       return cached;
     }
     try {
-      const info = await params.app.client.conversations.info({
+      const info = await params.client.conversations.info({
         token: params.botToken,
         channel: channelId,
       });
@@ -430,7 +440,7 @@ export function createSlackMonitorContext(params: {
       return cached;
     }
     try {
-      const info = await params.app.client.users.info({
+      const info = await params.client.users.info({
         token: params.botToken,
         user: userId,
       });
@@ -454,7 +464,7 @@ export function createSlackMonitorContext(params: {
       return;
     }
     try {
-      await params.app.client.assistant.threads.setStatus({
+      await params.client.assistant.threads.setStatus({
         token: params.botToken,
         channel_id: p.channelId,
         thread_ts: p.threadTs,
@@ -483,7 +493,7 @@ export function createSlackMonitorContext(params: {
       return false;
     }
     try {
-      await params.app.client.assistant.threads.setSuggestedPrompts({
+      await params.client.assistant.threads.setSuggestedPrompts({
         token: params.botToken,
         channel_id: p.channelId,
         thread_ts: p.threadTs,
@@ -606,6 +616,7 @@ export function createSlackMonitorContext(params: {
     accountId: params.accountId,
     botToken: params.botToken,
     app: params.app,
+    client: params.client,
     runtime: params.runtime,
     channelRuntime: params.channelRuntime,
     botUserId: params.botUserId,
