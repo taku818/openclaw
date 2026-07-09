@@ -357,6 +357,8 @@ function createArgMenusHarness() {
     },
     textLimit: 4000,
     app,
+    // Source reads ctx.client (per-account WebClient), not ctx.app.client.
+    client: app.client,
     isChannelAllowed: () => true,
     resolveChannelName: async () => ({ name: "dm", type: "im" }),
     resolveUserName: async () => ({ name: "Ada" }),
@@ -641,6 +643,8 @@ describe("Slack native command argument menus", () => {
       },
       textLimit: 4000,
       app,
+      // Source reads ctx.client (per-account WebClient), not ctx.app.client.
+      client: app.client,
       isChannelAllowed: () => true,
       resolveChannelName: async () => ({ name: "dm", type: "im" }),
       resolveUserName: async () => ({ name: "Ada" }),
@@ -1062,6 +1066,8 @@ function createPolicyHarness(overrides?: {
     },
     textLimit: 4000,
     app,
+    // Source reads ctx.client (per-account WebClient), not ctx.app.client.
+    client: app.client,
     isChannelAllowed: () => true,
     shouldDropMismatchedSlackEvent: (body: unknown) =>
       overrides?.shouldDropMismatchedSlackEvent?.(body) ?? false,

@@ -138,6 +138,8 @@ describe("authorizeSlackSystemEventSender", () => {
       accountId: "main",
       allowNameMatching: false,
       app: { client: { conversations: { members: conversationsMembers } } },
+      // Source reads ctx.client (per-account WebClient), not ctx.app.client.
+      client: { conversations: { members: conversationsMembers } },
       botToken: "xoxb-test",
     } as unknown as SlackMonitorContext;
 
@@ -176,6 +178,8 @@ describe("authorizeSlackSystemEventSender", () => {
       accountId: "main",
       allowNameMatching: false,
       app: { client: { conversations: { members: conversationsMembers } } },
+      // Source reads ctx.client (per-account WebClient), not ctx.app.client.
+      client: { conversations: { members: conversationsMembers } },
       botToken: "xoxb-test",
     } as unknown as SlackMonitorContext;
 
@@ -210,6 +214,8 @@ describe("authorizeSlackSystemEventSender", () => {
       accountId: "main",
       allowNameMatching: false,
       app: { client: { conversations: { members: conversationsMembers } } },
+      // Source reads ctx.client (per-account WebClient), not ctx.app.client.
+      client: { conversations: { members: conversationsMembers } },
       botToken: "xoxb-test",
     } as unknown as SlackMonitorContext;
 
@@ -251,6 +257,8 @@ describe("authorizeSlackSystemEventSender", () => {
       accountId: "main",
       allowNameMatching: false,
       app: { client: { conversations: { members: conversationsMembers } } },
+      // Source reads ctx.client (per-account WebClient), not ctx.app.client.
+      client: { conversations: { members: conversationsMembers } },
       botToken: "xoxb-test",
     } as unknown as SlackMonitorContext;
 
